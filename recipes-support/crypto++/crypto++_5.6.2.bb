@@ -35,7 +35,12 @@ do_install() {
     # install headers
     install -d ${D}${includedir}/crypto++
     cp -rf ${S}/*.h ${D}${includedir}/crypto++
+
+    # Since some distro call crypto++ as cryptopp, create symlink for compability
     ln -sf crypto++ ${D}${includedir}/cryptopp
+    ln -sf libcrypto++.so.${PV} ${D}${libdir}/libcryptopp.so
+    ln -sf libcrypto++.so ${D}${libdir}/libcryptopp.so
+    ln -sf libcrypto++.a ${D}${libdir}/libcryptopp.a
 }
 
 PACKAGES = "lib${BPN} lib${BPN}-dev lib${BPN}-staticdev lib${BPN}-dbg"
