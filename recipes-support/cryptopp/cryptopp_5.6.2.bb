@@ -7,6 +7,8 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/BSL-1.0;md5=65a7df9ad57aacf825f
 DEPEND = "libtool unzip-native"
 
 SRC_URI = "http://www.cryptopp.com/cryptopp562.zip"
+SRC_URI += "file://cryptopp.pc.in"
+
 SRC_URI[md5sum] = "7ed022585698df48e65ce9218f6c6a67"
 SRC_URI[sha256sum] = "5cbfd2fcb4a6b3aab35902e2e0f3b59d9171fee12b3fc2b363e1801dfec53574"
 
@@ -19,6 +21,9 @@ do_compile() {
     # Build both dynamic and static libs
     oe_runmake -f GNUmakefile dynamic CXXFLAGS="-DNDEBUG -g -O2 -fPIC"
     oe_runmake -f GNUmakefile static
+
+    # build for pkgconfig
+    sed s/@VERSION@/${PN}/g ${WORKDIR}/cryptopp.pc.in > ${WORKDIR}/cryptopp.pc
 }
 
 do_install() {
@@ -32,15 +37,18 @@ do_install() {
     install -m 0644 ${S}/libcryptopp.so.${PV} ${D}${libdir}
     ln -sf libcryptopp.so.${PV} ${D}${libdir}/libcryptopp.so
 
+    # Since some distro call crypto++ as cryptopp, create symlink for compability
+    ln -sf libcryptopp.so.${PV} ${D}${libdir}/libcrypto++.so
+    ln -sf libcryptopp.so ${D}${libdir}/libcrypto++.so
+    ln -sf libcryptopp.a ${D}${libdir}/libcrypto++.a
+
     # install headers
     install -d ${D}${includedir}/crypto++
     cp -rf ${S}/*.h ${D}${includedir}/crypto++
-
-    # Since some distro call crypto++ as cryptopp, create symlink for compability
     ln -sf crypto++ ${D}${includedir}/cryptopp
-    ln -sf libcrypto++.so.${PV} ${D}${libdir}/libcryptopp.so
-    ln -sf libcrypto++.so ${D}${libdir}/libcryptopp.so
-    ln -sf libcrypto++.a ${D}${libdir}/libcryptopp.a
+
+    install -d ${D}${libdir}/pkgconfig
+    install -m 0644 ${S}/cryptopp.pc ${D}${libdir}/pkgconfig
 }
 
 PACKAGES = "lib${BPN} lib${BPN}-dev lib${BPN}-staticdev lib${BPN}-dbg"
