@@ -23,7 +23,7 @@ do_compile() {
     oe_runmake -f GNUmakefile static
 
     # build for pkgconfig
-    sed s/@VERSION@/${PN}/g ${WORKDIR}/cryptopp.pc.in > ${WORKDIR}/cryptopp.pc
+    sed s/@VERSION@/${PV}/g ${WORKDIR}/cryptopp.pc.in > ${WORKDIR}/cryptopp.pc
 }
 
 do_install() {
