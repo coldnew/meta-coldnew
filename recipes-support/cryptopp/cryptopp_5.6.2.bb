@@ -51,7 +51,7 @@ do_install() {
     install -m 0644 ${S}/cryptopp.pc ${D}${libdir}/pkgconfig
 }
 
-PACKAGES = "lib${BPN} lib${BPN}-dev lib${BPN}-staticdev lib${BPN}-dbg"
+PACKAGES += " lib${BPN} lib${BPN}-dev lib${BPN}-staticdev lib${BPN}-dbg"
 FILES_lib${BPN} = "${libdir}/lib*.so.*"
 FILES_lib${BPN}-dev = "${includedir} ${libdir}/lib*.so ${libdir}/lib*.la ${libdir}/pkgconfig"
 FILES_lib${BPN}-dbg = "${libdir}/.debug ${prefix}/src/debug"
